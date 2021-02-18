@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
+const exercisesRouter = require('./routes/exercises');
+const usersRouter = require ('./routes/users');
+
 require("dotenv").config();
 
 // Initialize express
@@ -25,6 +28,10 @@ const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connection established succesfully");
 });
+
+// Routes
+app.use('/exercises', exercisesRouter);
+app.use('/users', usersRouter);
 
 // Start listening
 app.listen(port, () => {
