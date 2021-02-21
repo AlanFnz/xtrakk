@@ -22,7 +22,42 @@ router.route('/add').post((req, res) => {
 });
 
   newExercise.save()
-    .then(() => res.status(201).json('Exercise added'))
+    .then(() => res.status(201).json({
+      status: 'success',
+      message: 'Exercise added',
+      data: newExercise,
+    }))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id').get((req, res) => {
+  Exercise.findById(req.params.id)
+    .then(exercise => res.status(200).json(exercise))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id').delete((req, res) => {
+  Exercise.findByIdAndDelete(req.params.id)
+    .then(() => res.status(200).json('Exercise deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/update/:id').post((req, res) => {
+  Exercise.findById(req.params.id)
+    .then(exercise => {
+      exercise.username = req.body.username;
+      exercise.description = req.body.description;
+      exercise.duration = Number(req.body.duration);
+      exercise.date = Date.parse(req.body.date);
+
+      exercise.save()
+        .then(() => res.status(200).json({
+          status: 'success',
+          message: 'Exercise updated.',
+          data: exercise,
+        }))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
